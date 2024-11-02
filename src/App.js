@@ -61,6 +61,21 @@ function reducer(state, { type, payload }) {
 			}
 		case ACTIONS.CLEAR:
 			return {}; {/* Empty state */}
+		case ACTIONS.EVALUATE:
+			if (
+				state.operation == null || 
+				state.currentOperand == null || 
+				state.previousOperand == null
+			) {
+				return state;
+			}
+
+			return {
+				...state,
+				previousOperand: null,
+				operation: null,
+				currentOperand: evaluate(state)
+			}
 	}
 }
 
@@ -132,7 +147,12 @@ function App() {
 
 			<DigitButton digit="." dispatch={dispatch} />
 			<DigitButton digit="0" dispatch={dispatch} />
-			<button className="span-two">=</button>
+			<button 
+				className="span-two" 
+				onClick={() => dispatch({ type: ACTIONS.EVALUATE})}
+			>
+				=
+			</button>
 		</div>
   );
 }
