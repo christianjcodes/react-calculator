@@ -33,6 +33,14 @@ function reducer(state, { type, payload }) {
 			if (state.currentOperand == null && state.previousOperand == null) {
 				return state; {/* If there are no operands, do nothing when operator is clicked*/}
 			}
+			
+			{/* Enable user to change the operation */}
+			if (state.currentOperand == null) {
+				return {
+					...state,
+					operation: payload.operation
+				}
+			}
 
 			{/* Make current operand go to previousOperand's spot in the top slot of output */}
 			if (state.previousOperand == null) {
@@ -43,7 +51,8 @@ function reducer(state, { type, payload }) {
 					currentOperand: null
 				}
 			}
-
+			
+			{/* Default */}
 			return {
 				...state,
 				previousOperand: evaluate(state),
@@ -53,6 +62,35 @@ function reducer(state, { type, payload }) {
 		case ACTIONS.CLEAR:
 			return {}; {/* Empty state */}
 	}
+}
+
+{/* This is where all the operations will be defined */}
+function evaluate({ currentOperand, previousOperand, operation}) {
+
+	{/* Turn objects into numbers */}
+	const prev = parseFloat(previousOperand);
+	const current = parseFloat(currentOperand);
+
+	if (isNaN(prev) || isNaN(current)) return "";
+
+	let computation = "";
+
+	switch(operation) {
+		case "+": 
+			computation = prev + current;
+			break;
+		case "-":
+			computation = prev - current;
+			break;
+		case "*":
+			computation = prev * current;
+			break;
+		case "÷":
+			computation = prev / current;
+			break;
+	}
+
+	return computation.toString();
 }
 
 function App() {
@@ -84,7 +122,7 @@ function App() {
 			<DigitButton digit="5" dispatch={dispatch} />
 			<DigitButton digit="6" dispatch={dispatch} />
 
-			<OperationButton operation="÷" dispatch={dispatch} />
+			<OperationButton operation="+" dispatch={dispatch} />
 
 			<DigitButton digit="7" dispatch={dispatch} />
 			<DigitButton digit="8" dispatch={dispatch} />
