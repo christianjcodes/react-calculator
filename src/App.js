@@ -33,15 +33,22 @@ function reducer(state, { type, payload }) {
 			if (state.currentOperand == null && state.previousOperand == null) {
 				return state; {/* If there are no operands, do nothing when operator is clicked*/}
 			}
-			
+
 			{/* Make current operand go to previousOperand's spot in the top slot of output */}
 			if (state.previousOperand == null) {
 				return {
 					...state,
 					operation: payload.operation,
 					previousOperand: state.currentOperand,
-					currentOperand: null,
+					currentOperand: null
 				}
+			}
+
+			return {
+				...state,
+				previousOperand: evaluate(state),
+				operation: payload.operation,
+				currentOperand: null
 			}
 		case ACTIONS.CLEAR:
 			return {}; {/* Empty state */}
